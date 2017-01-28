@@ -129,7 +129,7 @@ def search_by_stop_id(stop_id):
     """
     return [Stop.from_json(_query("stops/bystop/" + stop_id))]
 
-def _get_departures(query, max_info=10):
+def _get_departures(query, max_info=20):
     json = _query(query, {"maxInfos" : str(max_info)})
     departures = []
     if json:
@@ -138,7 +138,7 @@ def _get_departures(query, max_info=10):
     return departures
 
 
-def get_departures(stop_id, max_info=10):
+def get_departures(stop_id, max_info=20):
     """ Return a list of Departure objects for a given stop stop_id
         optionally set the maximum number of entries 
     """
@@ -172,10 +172,11 @@ if __name__ == "__main__":
                 print(stop.name + " (" + stop.stop_id + ")")
         elif len(sys.argv) == 3 and sys.argv[1] == "departures":
             for dep in get_departures(sys.argv[2]):
-                print(dep.pretty_format())
+                    print(dep.pretty_format())
         elif len(sys.argv) == 4 and sys.argv[1] == "departures":
-            for dep in get_departures_by_route(sys.argv[2], sys.argv[3]):
-                print(dep.pretty_format())
+            for dep in get_departures(sys.argv[2]):
+                if dep.direction == sys.argv[3]:
+                    print(dep.pretty_format())
         else:
             print("No such command. Try \"search <name>/<stop_id>/<lat> <lon>\" or \"departures <stop stop_id> [<route>]\"")
     except IOError as e:
